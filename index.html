@@ -1,110 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Webpage Title (will show on tab) -->
-    <title>Professional Portfolio</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kaleb Fling | Portfolio</title>
     <style>
-        /* Basic styling for the page */
+        :root {
+            --bg: #0b1220;
+            --bg-alt: #0f1b2e;
+            --card: #101f36;
+            --text: #e6edf6;
+            --muted: #a8b3c7;
+            --accent: #3b82f6;
+            --accent-2: #1e40af;
+            --border: #20314f;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            line-height: 1.6;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+            color: var(--text);
+            line-height: 1.7;
         }
+
         header {
-            background: #333;
-            color: #fff;
-            padding: 1rem 0;
+            padding: 3rem 1.5rem 2rem;
             text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: radial-gradient(circle at top, #132845 0%, var(--bg) 55%);
         }
-        nav {
-            margin: 1rem 0;
+
+        header h1 {
+            margin: 0 0 0.5rem;
+            font-size: 2.5rem;
+            letter-spacing: 0.5px;
         }
+
+        header p {
+            margin: 0 0 1.5rem;
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+
         nav a {
-            color: #fff;
+            color: var(--text);
             text-decoration: none;
-            margin: 0 1rem;
+            margin: 0 0.75rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid transparent;
+            transition: all 0.2s ease-in-out;
+            display: inline-block;
         }
+
+        nav a:hover {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.25);
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem;
+        }
+
         section {
-            padding: 2rem;
-            border-bottom: 1px solid #ddd;
+            margin-bottom: 2rem;
+            padding: 1.75rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(5, 10, 20, 0.35);
         }
+
+        section h2 {
+            margin-top: 0;
+            font-size: 1.6rem;
+            border-left: 4px solid var(--accent);
+            padding-left: 0.75rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #0f1b33;
+        }
+
+        .tag {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.6rem;
+            background: rgba(30, 64, 175, 0.4);
+            color: #cfe3ff;
+            border-radius: 999px;
+            font-size: 0.85rem;
+        }
+
+        a {
+            color: var(--accent);
+        }
+
         footer {
             text-align: center;
-            padding: 1rem;
-            background: #333;
-            color: #fff;
+            padding: 1.5rem;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+            background: #0b1220;
         }
     </style>
 </head>
 <body>
-    <!-- Header Section -->
     <header>
-        <h1>Welcome to My Portfolio</h1>
+        <h1>Kaleb Fling</h1>
+        <p>Coder in Java and Python</p>
         <nav>
-            <a href="#about">About Me</a>
+            <a href="#about">About</a>
             <a href="#projects">Projects</a>
             <a href="#credentials">Credentials</a>
-            <a href="#contact">Contact Info</a>
+            <a href="#contact">Contact</a>
         </nav>
     </header>
 
-    <!-- About Me Section -->
-    <section id="about">
-        <h2>About Me</h2>
-        <p>
-            <!-- Add a brief introduction about yourself here -->
-            Hello! My name is [Your Name]. I am passionate about [your interests or profession]. 
-            Welcome to my portfolio website!
-        </p>
-    </section>
+    <main>
+        <section id="about">
+            <h2>About Me</h2>
+            <p>
+                I’m Kaleb Fling, a developer focused on Java and Python. I enjoy
+                building clean, reliable software and improving my skills every day.
+            </p>
+            <p class="tag">Open to learning & new projects</p>
+        </section>
 
-    <!-- Projects Section -->
-    <section id="projects">
-        <h2>Projects</h2>
-        <p>
-            <!-- Add a list or description of your projects here -->
-            Here are some of the projects I have worked on:
-        </p>
-        <ul>
-            <li>Project 1: [Brief description] <a href="[link to project repository]" target="_blank">[Project repository]</a></li>
-            <li>Project 2: [Brief description] <a href="[link to project repository]" target="_blank">[Project repository]</a></li>
-        </ul>
-    </section>
+        <section id="projects">
+            <h2>Projects</h2>
+            <p>Here are a few example projects (replace these with your real work):</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>Task Tracker CLI</h3>
+                    <p>
+                        A Python-based command-line tool for creating, organizing,
+                        and exporting tasks with tags and deadlines.
+                    </p>
+                    <a href="https://github.com/kabalab/" target="_blank">Repository</a>
+                    <div class="tag">Python • CLI • JSON</div>
+                </div>
+                <div class="card">
+                    <h3>Java Budget Planner</h3>
+                    <p>
+                        A Java app that helps users track expenses and visualize monthly
+                        spending with summaries.
+                    </p>
+                    <a href="https://github.com/kabalab/" target="_blank">Repository</a>
+                    <div class="tag">Java • OOP • Data</div>
+                </div>
+            </div>
+        </section>
 
-    <!-- Credentials Section -->
-    <section id="credentials">
-        <h2>Credentials</h2>
-        <p>
-            <!-- Add your credentials, certifications, or achievements here -->
-            I have earned the following certifications and achievements:
-        </p>
-        <ul>
-            <li>Certification 1: [Details]</li>
-            <li>Certification 2: [Details]</li>
-            <li>Certification 3: [Details]</li>
-            <!-- Add images of your certification digital badges -->
-        </ul>
-    </section>
+        <section id="credentials">
+            <h2>Credentials</h2>
+            <ul>
+                <li><strong>Python Certification</strong> — (Example: Issuer, 2025)</li>
+            </ul>
+        </section>
 
-    <!-- Contact Info Section -->
-    <section id="contact">
-        <h2>Contact Info</h2>
-        <p>
-            <!-- Add your contact information here -->
-            Feel free to reach out to me:
-        </p>
-        <ul>
-            <li>Email: [your-email@example.com]</li>
-            <li>LinkedIn: <a href="[your-linkedin-profile]" target="_blank">[Your LinkedIn]</a></li>
-        </ul>
-    </section>
+        <section id="contact">
+            <h2>Contact</h2>
+            <ul>
+                <li>Email: <a href="mailto:Kaleb@theflings.com">Kaleb@theflings.com</a></li>
+                <li>GitHub: <a href="https://github.com/kabalab/" target="_blank">github.com/kabalab</a></li>
+                <li>LinkedIn: <em>(Add later)</em></li>
+            </ul>
+        </section>
+    </main>
 
-    <!-- Footer Section -->
     <footer>
-        <p>&copy; 2025 [Your Name]. All rights reserved.</p>
+        <p>&copy; 2026 Kaleb Fling. All rights reserved.</p>
     </footer>
 </body>
 </html>
