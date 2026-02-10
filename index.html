@@ -16,16 +16,40 @@
             --border: #20314f;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
             color: var(--text);
             line-height: 1.7;
+            background: linear-gradient(120deg, #0b1220, #0f1b2e, #0c1830, #0f1b2e);
+            background-size: 400% 400%;
+            animation: gradientShift 18s ease infinite;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating background blobs */
+        .blob {
+            position: fixed;
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(59,130,246,0.25), transparent 65%);
+            filter: blur(10px);
+            z-index: -1;
+            animation: float 12s ease-in-out infinite;
+        }
+        .blob.one { top: -80px; left: -60px; }
+        .blob.two { bottom: -120px; right: -80px; animation-delay: 3s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            50% { transform: translateY(30px) translateX(20px); }
         }
 
         header {
@@ -33,12 +57,36 @@
             text-align: center;
             border-bottom: 1px solid var(--border);
             background: radial-gradient(circle at top, #132845 0%, var(--bg) 55%);
+            animation: fadeDown 1s ease both;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-18px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         header h1 {
             margin: 0 0 0.5rem;
             font-size: 2.5rem;
             letter-spacing: 0.5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Typing caret effect */
+        header h1::after {
+            content: "";
+            position: absolute;
+            right: -8px;
+            top: 6px;
+            width: 2px;
+            height: 70%;
+            background: var(--accent);
+            animation: blink 1s steps(2, start) infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         header p {
@@ -55,13 +103,14 @@
             border-radius: 999px;
             background: rgba(59, 130, 246, 0.12);
             border: 1px solid transparent;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.25s ease;
             display: inline-block;
         }
-
         nav a:hover {
             border-color: var(--accent);
             background: rgba(59, 130, 246, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(59, 130, 246, 0.25);
         }
 
         main {
@@ -77,6 +126,13 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(5, 10, 20, 0.35);
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        section.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         section h2 {
@@ -97,6 +153,12 @@
             border-radius: 12px;
             border: 1px solid var(--border);
             background: #0f1b33;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: var(--accent);
+            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.25);
         }
 
         .tag {
@@ -109,9 +171,7 @@
             font-size: 0.85rem;
         }
 
-        a {
-            color: var(--accent);
-        }
+        a { color: var(--accent); }
 
         footer {
             text-align: center;
@@ -119,10 +179,19 @@
             color: var(--muted);
             border-top: 1px solid var(--border);
             background: #0b1220;
+            animation: fadeUp 1s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
+    <div class="blob one"></div>
+    <div class="blob two"></div>
+
     <header>
         <h1>Kaleb Fling</h1>
         <p>Coder in Java and Python</p>
@@ -189,5 +258,19 @@
     <footer>
         <p>&copy; 2026 Kaleb Fling. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Scroll reveal animation
+        const sections = document.querySelectorAll("section");
+        const revealOnScroll = () => {
+            const trigger = window.innerHeight * 0.85;
+            sections.forEach((section) => {
+                const top = section.getBoundingClientRect().top;
+                if (top < trigger) section.classList.add("show");
+            });
+        };
+        window.addEventListener("scroll", revealOnScroll);
+        window.addEventListener("load", revealOnScroll);
+    </script>
 </body>
 </html>
