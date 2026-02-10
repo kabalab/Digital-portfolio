@@ -42,14 +42,22 @@
             height: 380px;
             background: radial-gradient(circle, rgba(59,130,246,0.25), transparent 65%);
             filter: blur(10px);
-            z-index: -1;
+            z-index: -2;
             animation: float 12s ease-in-out infinite;
         }
         .blob.one { top: -80px; left: -60px; }
         .blob.two { bottom: -120px; right: -80px; animation-delay: 3s; }
+
         @keyframes float {
             0%, 100% { transform: translateY(0px) translateX(0px); }
             50% { transform: translateY(30px) translateX(20px); }
+        }
+
+        /* Particle canvas */
+        #particleCanvas {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
         }
 
         header {
@@ -69,24 +77,6 @@
             margin: 0 0 0.5rem;
             font-size: 2.5rem;
             letter-spacing: 0.5px;
-            position: relative;
-            display: inline-block;
-        }
-
-        /* Typing caret effect */
-        header h1::after {
-            content: "";
-            position: absolute;
-            right: -8px;
-            top: 6px;
-            width: 2px;
-            height: 70%;
-            background: var(--accent);
-            animation: blink 1s steps(2, start) infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
         }
 
         header p {
@@ -189,10 +179,11 @@
     </style>
 </head>
 <body>
+    <canvas id="particleCanvas"></canvas>
     <div class="blob one"></div>
     <div class="blob two"></div>
 
-    <header>
+    <header data-parallax>
         <h1>Kaleb Fling</h1>
         <p>Coder in Java and Python</p>
         <nav>
@@ -204,7 +195,7 @@
     </header>
 
     <main>
-        <section id="about">
+        <section id="about" data-parallax>
             <h2>About Me</h2>
             <p>
                 I’m Kaleb Fling, a developer focused on Java and Python. I enjoy
@@ -213,7 +204,7 @@
             <p class="tag">Open to learning & new projects</p>
         </section>
 
-        <section id="projects">
+        <section id="projects" data-parallax>
             <h2>Projects</h2>
             <p>Here are a few example projects (replace these with your real work):</p>
             <div class="grid">
@@ -238,14 +229,14 @@
             </div>
         </section>
 
-        <section id="credentials">
+        <section id="credentials" data-parallax>
             <h2>Credentials</h2>
             <ul>
                 <li><strong>Python Certification</strong> — (Example: Issuer, 2025)</li>
             </ul>
         </section>
 
-        <section id="contact">
+        <section id="contact" data-parallax>
             <h2>Contact</h2>
             <ul>
                 <li>Email: <a href="mailto:Kaleb@theflings.com">Kaleb@theflings.com</a></li>
@@ -271,6 +262,60 @@
         };
         window.addEventListener("scroll", revealOnScroll);
         window.addEventListener("load", revealOnScroll);
+
+        // Parallax effect
+        const parallaxItems = document.querySelectorAll("[data-parallax]");
+        window.addEventListener("scroll", () => {
+            const scrollY = window.scrollY;
+            parallaxItems.forEach((el, i) => {
+                const speed = 0.02 + (i * 0.005);
+                el.style.transform = `translateY(${scrollY * speed}px)`;
+            });
+        });
+
+        // Particle background
+        const canvas = document.getElementById("particleCanvas");
+        const ctx = canvas.getContext("2d");
+        let particles = [];
+        const particleCount = 70;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 2 + 1,
+                    dx: (Math.random() - 0.5) * 0.6,
+                    dy: (Math.random() - 0.5) * 0.6,
+                });
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(59,130,246,0.6)";
+            particles.forEach(p => {
+                p.x += p.dx;
+                p.y += p.dy;
+                if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        createParticles();
+        animateParticles();
     </script>
 </body>
 </html>
