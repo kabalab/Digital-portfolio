@@ -329,7 +329,10 @@
         }
 
         function draw() {
-            background(11, 18, 32);
+            const r = 11 + (5 * scrollT);
+            const g = 18 + (10 * scrollT);
+            const b = 32 + (30 * scrollT);
+            background(r, g, b);
             Shape.renderer();
         }
 
@@ -362,4 +365,5 @@
         });
     </script>
 </body>
+
 </html>
