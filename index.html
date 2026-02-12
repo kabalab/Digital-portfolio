@@ -23,16 +23,15 @@
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text);
             line-height: 1.7;
-            background: linear-gradient(120deg, #0b1220, #0f1b2e, #0c1830, #0f1b2e);
-            background-size: 400% 400%;
-            animation: gradientShift 18s ease infinite;
+            background: #0b1220;
             overflow-x: hidden;
         }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* Make p5 canvas a full-page background */
+        canvas {
+            position: fixed !important;
+            inset: 0;
+            z-index: -3;
         }
 
         /* Floating background blobs */
@@ -53,19 +52,13 @@
             50% { transform: translateY(30px) translateX(20px); }
         }
 
-        /* Particle canvas */
-        #particleCanvas {
-            position: fixed;
-            inset: 0;
-            z-index: -3;
-        }
-
         header {
             padding: 3rem 1.5rem 2rem;
             text-align: center;
             border-bottom: 1px solid var(--border);
-            background: radial-gradient(circle at top, #132845 0%, var(--bg) 55%);
+            background: radial-gradient(circle at top, #132845 0%, rgba(11,18,32,0.85) 55%);
             animation: fadeDown 1s ease both;
+            backdrop-filter: blur(3px);
         }
 
         @keyframes fadeDown {
@@ -112,13 +105,14 @@
         section {
             margin-bottom: 2rem;
             padding: 1.75rem;
-            background: var(--card);
+            background: rgba(16, 31, 54, 0.92);
             border: 1px solid var(--border);
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(5, 10, 20, 0.35);
             opacity: 0;
             transform: translateY(18px);
             transition: opacity 0.7s ease, transform 0.7s ease;
+            backdrop-filter: blur(2px);
         }
         section.show {
             opacity: 1;
@@ -142,7 +136,7 @@
             padding: 1rem;
             border-radius: 12px;
             border: 1px solid var(--border);
-            background: #0f1b33;
+            background: rgba(15, 27, 51, 0.9);
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
         .card:hover {
@@ -168,8 +162,9 @@
             padding: 1.5rem;
             color: var(--muted);
             border-top: 1px solid var(--border);
-            background: #0b1220;
+            background: rgba(11, 18, 32, 0.9);
             animation: fadeUp 1s ease both;
+            backdrop-filter: blur(3px);
         }
 
         @keyframes fadeUp {
@@ -179,7 +174,6 @@
     </style>
 </head>
 <body>
-    <canvas id="particleCanvas"></canvas>
     <div class="blob one"></div>
     <div class="blob two"></div>
 
@@ -250,7 +244,101 @@
         <p>&copy; 2026 Kaleb Fling. All rights reserved.</p>
     </footer>
 
+    <!-- p5.js -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.min.js"></script>
     <script>
+        // ===== Your p5.js background sketch =====
+        let widt;
+
+        class Shape {
+            static shapes = [];
+
+            constructor(on=false, x=random(widt/100*3, width-widt/100*3), y=random(-width, -width/2),
+                        w=random(widt/100, widt/100*3), go=1, shapeC=["Box", "Tri", "Pen"][Math.floor(Math.random() * 3)]) {
+                this.reset(on, x, y, w, go, shapeC);
+            }
+
+            reset(on=false, x=random(widt/100*3, width-widt/100*3), y=random(-width, -width/2),
+                  w=random(widt/100, widt/100*4), go=1, shapeC=random(["Box", "Tri", "Pen"]),
+                  r=((random(100) < 5) ? random(3) : 0)) {
+                this.W = w;
+                this.R = random(0.005,0.01) * random([-1,1]);
+                this.vel = map(w, widt/100, widt/100*3, 2.5, 5);
+                this.x = x;
+                this.y = y;
+                this.a = random(100);
+                this.go = go;
+                this.b = random(255);
+                this.r = floor(r);
+                if (shapeC == "Box") {
+                    this.angles = {
+                        1: Math.PI / 2 * 0 + this.a,
+                        2: Math.PI / 2 * 1 + this.a,
+                        3: Math.PI / 2 * 2 + this.a,
+                        4: Math.PI / 2 * 3 + this.a
+                    };
+                } else if (shapeC == "Tri") {
+                    this.angles = {
+                        1: Math.PI * 2 / 3 * 0 + this.a,
+                        2: Math.PI * 2 / 3 * 1 + this.a,
+                        3: Math.PI * 2 / 3 * 2 + this.a
+                    };
+                } else if (shapeC == "Pen") {
+                    this.angles = {
+                        1: Math.PI * 2 / 5 * 0 + this.a,
+                        2: Math.PI * 2 / 5 * 1 + this.a,
+                        3: Math.PI * 2 / 5 * 2 + this.a,
+                        4: Math.PI * 2 / 5 * 3 + this.a,
+                        5: Math.PI * 2 / 5 * 4 + this.a,
+                    };
+                }
+                if (on) {
+                    Shape.shapes.push(this);
+                }
+            }
+
+            static renderer() {
+                for (const shape of Shape.shapes) {
+                    shape.render();
+                }
+            }
+
+            render() {
+                noStroke();
+                fill(0, 0, this.b);
+                beginShape();
+                for (let key in this.angles) {
+                    vertex(this.x + this.W/2 * sin(this.angles[key]),
+                           this.y + this.W/2 * cos(this.angles[key]));
+                    this.angles[key] += (key != this.r) ? this.R : 0;
+                }
+                endShape(CLOSE);
+                this.y += this.vel * this.go;
+                if (this.y > width) {
+                    this.reset();
+                }
+            }
+        }
+
+        function setup() {
+            widt = Math.max(window.innerWidth, window.innerHeight);
+            createCanvas(window.innerWidth, window.innerHeight);
+            for (let i = 0; i < 400; i++) {
+                new Shape(true, random(width), random(-width/2.5, width));
+            }
+        }
+
+        function draw() {
+            background(11, 18, 32);
+            Shape.renderer();
+        }
+
+        function windowResized() {
+            resizeCanvas(window.innerWidth, window.innerHeight);
+            widt = Math.max(window.innerWidth, window.innerHeight);
+        }
+        // ===== End p5.js =====
+
         // Scroll reveal animation
         const sections = document.querySelectorAll("section");
         const revealOnScroll = () => {
@@ -272,50 +360,6 @@
                 el.style.transform = `translateY(${scrollY * speed}px)`;
             });
         });
-
-        // Particle background
-        const canvas = document.getElementById("particleCanvas");
-        const ctx = canvas.getContext("2d");
-        let particles = [];
-        const particleCount = 70;
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
-
-        function createParticles() {
-            particles = [];
-            for (let i = 0; i < particleCount; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    r: Math.random() * 2 + 1,
-                    dx: (Math.random() - 0.5) * 0.6,
-                    dy: (Math.random() - 0.5) * 0.6,
-                });
-            }
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(59,130,246,0.6)";
-            particles.forEach(p => {
-                p.x += p.dx;
-                p.y += p.dy;
-                if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            requestAnimationFrame(animateParticles);
-        }
-
-        createParticles();
-        animateParticles();
     </script>
 </body>
 </html>
