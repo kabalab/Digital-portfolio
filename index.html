@@ -27,14 +27,12 @@
             overflow-x: hidden;
         }
 
-        /* Make p5 canvas a full-page background */
         canvas {
             position: fixed !important;
             inset: 0;
             z-index: -3;
         }
 
-        /* Floating background blobs */
         .blob {
             position: fixed;
             width: 380px;
@@ -244,9 +242,15 @@
         <p>&copy; 2026 Kaleb Fling. All rights reserved.</p>
     </footer>
 
-    <!-- p5.js -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.min.js"></script>
     <script>
+        // ===== Scroll progress for color change =====
+        let scrollT = 0;
+        window.addEventListener("scroll", () => {
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+            scrollT = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+        });
+
         // ===== Your p5.js background sketch =====
         let widt;
 
@@ -365,5 +369,4 @@
         });
     </script>
 </body>
-
 </html>
